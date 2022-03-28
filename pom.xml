@@ -10,6 +10,7 @@
     <modules>
         <module>wymm-common</module>
         <module>wymm-tool</module>
+        <module>wymm-sample</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -118,28 +119,28 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
-                    <configuration>
-                        <finalName>${project.build.finalName}</finalName>
-                        <layers>
-                            <enabled>true</enabled>
-                        </layers>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+<!--        <pluginManagement>-->
+<!--            <plugins>-->
+<!--                <plugin>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                    <version>${spring-boot.version}</version>-->
+<!--                    <configuration>-->
+<!--                        <finalName>${project.build.finalName}</finalName>-->
+<!--                        <layers>-->
+<!--                            <enabled>true</enabled>-->
+<!--                        </layers>-->
+<!--                    </configuration>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <goals>-->
+<!--                                <goal>repackage</goal>-->
+<!--                            </goals>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                </plugin>-->
+<!--            </plugins>-->
+<!--        </pluginManagement>-->
         <plugins>
             <!--打包jar 与git commit 关联插件-->
             <plugin>

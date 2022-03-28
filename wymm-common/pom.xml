@@ -18,6 +18,6 @@
         <module>wymm-common-bom</module>
         <module>wymm-common-core</module>
         <module>wymm-common-log</module>
-        <module>../../wymm-common/wymm/wymm-common-meta</module>
+        <module>wymm-common-meta</module>
     </modules>
 </project>
