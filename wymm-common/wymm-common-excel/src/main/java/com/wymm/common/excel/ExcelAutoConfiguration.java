@@ -2,25 +2,23 @@ package com.wymm.common.excel;
 
 import com.alibaba.excel.EasyExcel;
 import com.wymm.common.excel.aop.ExcelResponseReturnValueHandler;
-import com.wymm.common.excel.config.EasyExcelConfiguration;
+import com.wymm.common.excel.config.ExcelConfiguration;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-@Import(EasyExcelConfiguration.class)
+@Import(ExcelConfiguration.class)
 @RequiredArgsConstructor
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(EasyExcel.class)
-public class EasyExcelAutoConfiguration {
+public class ExcelAutoConfiguration {
     
     private final RequestMappingHandlerAdapter requestMappingHandlerAdapter;
     

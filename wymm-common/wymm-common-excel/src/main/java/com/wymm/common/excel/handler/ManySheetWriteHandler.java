@@ -6,15 +6,18 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.wymm.common.excel.annotation.ExcelResponse;
 import com.wymm.common.excel.config.ExcelConfigProperties;
 import com.wymm.common.excel.utils.ExcelException;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Map;
 
-public class SingleSheetWriteHandler extends AbstractWriteHandler {
+public class ManySheetWriteHandler extends AbstractWriteHandler {
     
-    public SingleSheetWriteHandler(ExcelConfigProperties configProperties) {
+    public ManySheetWriteHandler(ExcelConfigProperties configProperties) {
         super(configProperties);
     }
     
@@ -28,7 +31,7 @@ public class SingleSheetWriteHandler extends AbstractWriteHandler {
     @Override
     public boolean support(Method executable, ExcelResponse excelResponse) {
         Class<?> methodReturnType = executable.getReturnType();
-        return Collection.class.isAssignableFrom(methodReturnType);
+        return Map.class.isAssignableFrom(methodReturnType);
     }
     
     /**
@@ -65,27 +68,22 @@ public class SingleSheetWriteHandler extends AbstractWriteHandler {
     @Override
     public void export(Object resultValue, HttpServletResponse response, ExcelResponse excelResponse) {
         this.check(resultValue, excelResponse);
-        
-        Collection<?> list = (Collection<?>) resultValue;
+    
+        Map<Integer, Collection<?>> map = (Map<Integer, Collection<?>>) resultValue;
         
         this.setExportFile(response, excelResponse);
         
         ExcelWriter excelWriter = null;
         try {
             excelWriter = getExcelWriter(response, excelResponse);
-            WriteSheet writeSheet;
-            
-            // 是否按模板写入
-            if (ObjectUtils.isNotEmpty(excelResponse.template())) {
-                writeSheet = EasyExcel.writerSheet(0)
-                        .build();
-            } else {
-                ExcelResponse.Sheet sheet = excelResponse.sheets()[0];
-                writeSheet = EasyExcel.writerSheet(sheet.sheetNo(), sheet.sheetName())
+            ExcelResponse.Sheet[] sheets = excelResponse.sheets();
+            for (ExcelResponse.Sheet sheet : sheets) {
+                WriteSheet writeSheet = EasyExcel.writerSheet(sheet.sheetNo(), sheet.sheetName())
                         .head(sheet.head())
                         .build();
+                excelWriter.write(map.get(sheet.sheetNo()), writeSheet);
             }
-            excelWriter.write(list, writeSheet);
+            
         } finally {
             if (excelWriter != null) {
                 // 关闭流

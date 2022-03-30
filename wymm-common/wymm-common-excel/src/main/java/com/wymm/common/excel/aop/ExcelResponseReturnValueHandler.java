@@ -1,23 +1,32 @@
 package com.wymm.common.excel.aop;
 
 import com.wymm.common.excel.annotation.ExcelResponse;
-import com.wymm.common.excel.handler.SheetWriteHandler;
-import lombok.RequiredArgsConstructor;
+import com.wymm.common.excel.handler.WriteHandler;
+import com.wymm.common.excel.utils.ExcelException;
+import com.wymm.common.excel.vo.ErrorMessage;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.Assert;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
-import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
-public class ExcelResponseReturnValueHandler implements HandlerMethodReturnValueHandler {
+public class ExcelResponseReturnValueHandler extends RequestResponseBodyMethodProcessor {
     
-    private final List<SheetWriteHandler> sheetWriteHandlerList;
+    private final List<WriteHandler> writeHandlerList;
+    
+    public ExcelResponseReturnValueHandler(List<HttpMessageConverter<?>> converters, List<WriteHandler> writeHandlerList) {
+        super(converters);
+        this.writeHandlerList = writeHandlerList;
+    }
     
     /**
      * 处理 @ExcelResponse 声明的方法
@@ -32,15 +41,38 @@ public class ExcelResponseReturnValueHandler implements HandlerMethodReturnValue
     
     @Override
     public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest) {
-        HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
-        Assert.state(response != null, "No HttpServletResponse");
-        mavContainer.setRequestHandled(true);
-        
-        ExcelResponse excelResponse = returnType.getMethodAnnotation(ExcelResponse.class);
-        
-        sheetWriteHandlerList.stream().filter(v -> v.support(returnValue))
-                .findFirst()
-                .ifPresent(handler -> handler.export(returnValue, response, excelResponse));
+                                  NativeWebRequest webRequest) throws HttpMediaTypeNotAcceptableException, IOException {
+        HttpServletResponse response = null;
+        try {
+            response = webRequest.getNativeResponse(HttpServletResponse.class);
+            Assert.state(response != null, "No HttpServletResponse");
+            mavContainer.setRequestHandled(true);
+            Method method = (Method) returnType.getExecutable();
+            
+            ExcelResponse excelResponse = returnType.getMethodAnnotation(ExcelResponse.class);
+            
+            writeHandlerList.stream()
+                    .filter(v -> v.support(method, excelResponse))
+                    .findFirst()
+                    .orElseThrow(() -> new ExcelException("Can not find 'WriteHandler' support " + method.getReturnType().getName()))
+                    .export(returnValue, response, excelResponse);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            
+            try {
+                if (response != null) {
+                    response.reset();
+                    //response.setContentType("application/json");
+                    //response.setCharacterEncoding("utf-8");
+                }
+            } catch (Exception ee) {
+                log.error(ee.getMessage(), ee);
+            }
+            
+            ErrorMessage message = new ErrorMessage();
+            message.setErrorMessage(e.getMessage());
+            super.handleReturnValue(message, returnType, mavContainer, webRequest);
+        }
     }
+    
 }

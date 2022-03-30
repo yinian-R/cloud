@@ -1,7 +1,6 @@
 package com.wymm.common.excel.annotation;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.handler.WriteHandler;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -15,51 +14,61 @@ import java.lang.annotation.Target;
 public @interface ExcelResponse {
     
     /**
-     * 文件名称
-     *
-     * @return 文件名称
+     * Excel filename prefix
      */
-    String name() default "";
+    String fileName();
     
     /**
-     * 文件类型
-     *
-     * @return 文件类型
+     * Excel type.The default is xlsx
      */
     ExcelTypeEnum suffix() default ExcelTypeEnum.XLSX;
     
     /**
-     * 文件密码
-     *
-     * @return 文件密码
+     * Write excel in memory. Default false, the cache file is created and finally written to excel.
+     * Comment and RichTextString are only supported in memory mode.
+     */
+    boolean inMemory() default false;
+    
+    /**
+     * Whether the encryption
+     * WARRING:Encryption is when the entire file is read into memory, so it is very memory intensive.
      */
     String password() default "";
     
     /**
-     * 内存操作
+     * Template file
      *
-     * @return true 在内存中、false 不在内存中
-     */
-    boolean inMemory() default true;
-    
-    /**
-     * excel 模板
+     * use local file example:
+     * "file:/home/demo.xlsx"
+     * "/home/demo.xlsx"
      *
-     * @return String
+     * class resource file example:
+     * "excel/demo.xlsx"
      */
     String template() default "";
     
     /**
-     * 拦截器，自定义样式等处理器
-     *
-     * @return WriteHandler[]
+     * Sheet
      */
-    Class<? extends WriteHandler>[] writeHandler() default {};
+    Sheet[] sheets() default {};
     
-    /**
-     * Sheet 名称
-     *
-     * @return string
-     */
-    Sheet sheet() default @Sheet(sheetName = "sheet1");
+    @interface Sheet {
+        
+        /**
+         * head
+         */
+        Class<?> head() default Void.class;
+    
+        /**
+         * Index of sheet,0 base.
+         */
+        int sheetNo() default 0;
+        
+        /**
+         * The name of sheet.
+         */
+        String sheetName() default "";
+        
+    }
+    
 }

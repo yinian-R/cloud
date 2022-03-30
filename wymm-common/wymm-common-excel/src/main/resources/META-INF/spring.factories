@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.wymm.common.excel.EasyExcelAutoConfiguration
+  com.wymm.common.excel.ExcelAutoConfiguration
