@@ -76,8 +76,7 @@ public class ManySheetWriteHandler extends AbstractWriteHandler {
         ExcelWriter excelWriter = null;
         try {
             excelWriter = getExcelWriter(response, excelResponse);
-            ExcelResponse.Sheet[] sheets = excelResponse.sheets();
-            for (ExcelResponse.Sheet sheet : sheets) {
+            for (ExcelResponse.Sheet sheet : excelResponse.sheets()) {
                 WriteSheet writeSheet = EasyExcel.writerSheet(sheet.sheetNo(), sheet.sheetName())
                         .head(sheet.head())
                         .build();

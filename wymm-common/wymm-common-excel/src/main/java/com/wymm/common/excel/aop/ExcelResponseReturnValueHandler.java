@@ -58,17 +58,6 @@ public class ExcelResponseReturnValueHandler extends RequestResponseBodyMethodPr
                     .export(returnValue, response, excelResponse);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            
-            try {
-                if (response != null) {
-                    response.reset();
-                    //response.setContentType("application/json");
-                    //response.setCharacterEncoding("utf-8");
-                }
-            } catch (Exception ee) {
-                log.error(ee.getMessage(), ee);
-            }
-            
             ErrorMessage message = new ErrorMessage();
             message.setErrorMessage(e.getMessage());
             super.handleReturnValue(message, returnType, mavContainer, webRequest);

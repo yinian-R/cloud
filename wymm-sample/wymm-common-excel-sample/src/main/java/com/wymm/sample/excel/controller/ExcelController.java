@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,9 @@ import java.util.Map;
 @RestController
 public class ExcelController {
     
+    /**
+     * 原生代码
+     */
     @GetMapping("/download")
     public void download(HttpServletResponse response) throws IOException {
         // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
@@ -82,10 +86,15 @@ public class ExcelController {
     /**
      * 测试导出 错误的返回值
      */
-    @ExcelResponse(fileName = "测试导出")
+    @ExcelResponse(fileName = "测试导出",
+            sheets = @ExcelResponse.Sheet(sheetName = "sheetNameHR", head = DownloadData.class)
+    )
     @GetMapping("/downloadError")
-    public DownloadData error() {
-        return null;
+    public List<List<DownloadData>> error() {
+        List<List<DownloadData>> list = new ArrayList<>();
+        list.add(data());
+        list.add(data());
+        return list;
     }
     
     /**
