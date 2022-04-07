@@ -34,7 +34,7 @@ public class MetaAspect {
             Field[] declaredFields = retValClass.getDeclaredFields();
             for (Field field : declaredFields) {
                 MetaField metaField = field.getAnnotation(MetaField.class);
-                if (metaField != null) {
+                if (ObjectUtils.isNotEmpty(metaField)) {
                     for (MetaBind metaBind : metaBindList) {
                         field.setAccessible(true);
                         Object fieldObj = ReflectionUtils.getField(field, retVal);
