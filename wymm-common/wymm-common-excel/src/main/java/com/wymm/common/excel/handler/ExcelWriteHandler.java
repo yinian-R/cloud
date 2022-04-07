@@ -3,7 +3,7 @@ package com.wymm.common.excel.handler;
 import com.alibaba.excel.ExcelWriter;
 import com.wymm.common.excel.annotation.ExcelResponse;
 import com.wymm.common.excel.config.ExcelConfigProperties;
-import com.wymm.common.excel.utils.ExcelException;
+import com.wymm.common.excel.util.ExcelException;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.ObjectUtils;
 

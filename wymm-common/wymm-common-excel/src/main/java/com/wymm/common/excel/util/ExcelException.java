@@ -1,4 +1,4 @@
-package com.wymm.common.excel.utils;
+package com.wymm.common.excel.util;
 
 public class ExcelException extends RuntimeException{
     

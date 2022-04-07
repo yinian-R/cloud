@@ -5,7 +5,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.wymm.common.excel.annotation.ExcelResponse;
 import com.wymm.common.excel.config.ExcelConfigProperties;
-import com.wymm.common.excel.utils.ExcelException;
+import com.wymm.common.excel.util.ExcelException;
 
 import javax.servlet.http.HttpServletResponse;
 

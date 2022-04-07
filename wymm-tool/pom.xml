@@ -13,4 +13,7 @@
     <packaging>pom</packaging>
 
 
+    <modules>
+        <module>wymm-openapi</module>
+    </modules>
 </project>

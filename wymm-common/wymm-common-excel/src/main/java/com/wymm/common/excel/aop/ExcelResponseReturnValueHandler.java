@@ -2,7 +2,7 @@ package com.wymm.common.excel.aop;
 
 import com.wymm.common.excel.annotation.ExcelResponse;
 import com.wymm.common.excel.handler.WriteHandler;
-import com.wymm.common.excel.utils.ExcelException;
+import com.wymm.common.excel.util.ExcelException;
 import com.wymm.common.excel.vo.ErrorMessage;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
