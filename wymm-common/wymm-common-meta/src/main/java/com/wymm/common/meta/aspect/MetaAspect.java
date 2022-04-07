@@ -7,6 +7,7 @@ import com.wymm.common.meta.reflection.MetaObject;
 import com.wymm.common.meta.util.MetaUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -24,7 +25,7 @@ public class MetaAspect {
     
     @AfterReturning(value = "@annotation(com.wymm.common.meta.annotation.MetaMapping)", returning = "retVal")
     public void metaProcess(JoinPoint joinPoint, Object retVal) {
-        if (retVal == null) {
+        if (ObjectUtils.isNotEmpty(retVal) && ObjectUtils.isNotEmpty(metaBindList)) {
             return;
         }
         Class<?> retValClass = retVal.getClass();
