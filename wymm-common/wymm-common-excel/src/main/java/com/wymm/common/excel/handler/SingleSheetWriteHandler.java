@@ -70,7 +70,7 @@ public class SingleSheetWriteHandler extends AbstractWriteHandler {
         
         Collection<?> list = (Collection<?>) resultValue;
         
-        this.setExportFile(response, excelResponse);
+        this.initResponse(response, excelResponse);
         
         ExcelWriter excelWriter = null;
         try {

@@ -3,12 +3,8 @@ package com.wymm.sample.excel.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.ListUtils;
-import com.alibaba.excel.write.metadata.WriteSheet;
 import com.wymm.common.excel.annotation.ExcelResponse;
-import com.wymm.common.excel.handler.ExcelWriterProcess;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,9 +13,7 @@ import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class ExcelController {
@@ -121,39 +115,4 @@ public class ExcelController {
         }
         return list;
     }
-    
-    /**
-     * 使用 ExcelWriterProcess 导出
-     */
-    @ExcelResponse(fileName = "测试导出")
-    @GetMapping("/downloadByExcelWriterProcess")
-    public ExcelWriterProcess downloadByBuilder() {
-        return excelWriter -> {
-            WriteSheet writeSheet = EasyExcel.writerSheet("sheet名称")
-                    .head(DownloadData.class)
-                    .build();
-            excelWriter.write(data(), writeSheet);
-        };
-    }
-    
-    /**
-     * 使用 Map<Integer, List> 导出
-     */
-    @ExcelResponse(
-            fileName = "测试导出",
-            sheets = {
-                    @ExcelResponse.Sheet(sheetNo = 0, sheetName = "sheetName1", head = DownloadData.class),
-                    @ExcelResponse.Sheet(sheetNo = 1, sheetName = "sheetName2", head = DownloadData.class),
-                    @ExcelResponse.Sheet(sheetNo = 2, sheetName = "sheetName3", head = DownloadData.class)
-            }
-    )
-    @GetMapping("/downloadMany")
-    public Map<Integer, List<DownloadData>> downloadMany() {
-        Map<Integer, List<DownloadData>> map = new HashMap<>();
-        map.put(0, data());
-        map.put(1, data());
-        map.put(2, data());
-        return map;
-    }
-    
 }

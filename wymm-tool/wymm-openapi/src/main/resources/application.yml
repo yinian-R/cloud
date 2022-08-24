@@ -1,0 +1,15 @@
+server:
+  port: 13500
+
+knife4j:
+  enable: true
+  enableAggregation: true
+  cloud:
+    enable: true
+    routes:
+      - name: sample1
+        uri: 127.0.0.1:8080
+        location: /v2/api-docs
+      - name: sample2
+        uri: 127.0.0.1:8081
+        location: /v2/api-docs

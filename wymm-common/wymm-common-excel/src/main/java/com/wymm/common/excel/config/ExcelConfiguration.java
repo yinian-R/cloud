@@ -1,8 +1,6 @@
 package com.wymm.common.excel.config;
 
 import com.wymm.common.excel.aop.ExcelResponseReturnValueHandler;
-import com.wymm.common.excel.handler.ExcelWriteHandler;
-import com.wymm.common.excel.handler.ManySheetWriteHandler;
 import com.wymm.common.excel.handler.SingleSheetWriteHandler;
 import com.wymm.common.excel.handler.WriteHandler;
 import lombok.RequiredArgsConstructor;
@@ -33,18 +31,6 @@ public class ExcelConfiguration {
     @ConditionalOnMissingBean
     public SingleSheetWriteHandler singleSheetWriteHandler(ExcelConfigProperties excelConfigProperties) {
         return new SingleSheetWriteHandler(excelConfigProperties);
-    }
-    
-    @Bean
-    @ConditionalOnMissingBean
-    public ManySheetWriteHandler manySheetWriteHandler(ExcelConfigProperties excelConfigProperties) {
-        return new ManySheetWriteHandler(excelConfigProperties);
-    }
-    
-    @Bean
-    @ConditionalOnMissingBean
-    public ExcelWriteHandler excelWriteHandler(ExcelConfigProperties excelConfigProperties) {
-        return new ExcelWriteHandler(excelConfigProperties);
     }
     
     

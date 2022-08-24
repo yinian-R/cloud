@@ -9,6 +9,7 @@
     <version>1.0.0</version>
     <modules>
         <module>wymm-common</module>
+        <module>wymm-dependencies</module>
         <module>wymm-tool</module>
         <module>wymm-sample</module>
     </modules>
@@ -26,13 +27,15 @@
         <spring-cloud.version>2021.0.1</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
         <spring-boot-admin.version>2.6.2</spring-boot-admin.version>
-        <hutool.version>5.7.22</hutool.version>
+        <hutool.version>5.8.3</hutool.version>
         <velocity.version>2.3</velocity.version>
         <velocity.tool.version>3.1</velocity.tool.version>
         <jasypt.version>2.1.0</jasypt.version>
         <swagger.fox.version>3.0.0</swagger.fox.version>
         <git.commit.plugin>4.9.9</git.commit.plugin>
         <spring.checkstyle.plugin>0.0.29</spring.checkstyle.plugin>
+    
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
@@ -79,7 +82,7 @@
             <!--公共版本定义-->
             <dependency>
                 <groupId>com.wymm4cloud</groupId>
-                <artifactId>wymm-common-bom</artifactId>
+                <artifactId>wymm-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -119,28 +122,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-<!--        <pluginManagement>-->
-<!--            <plugins>-->
-<!--                <plugin>-->
-<!--                    <groupId>org.springframework.boot</groupId>-->
-<!--                    <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                    <version>${spring-boot.version}</version>-->
-<!--                    <configuration>-->
-<!--                        <finalName>${project.build.finalName}</finalName>-->
-<!--                        <layers>-->
-<!--                            <enabled>true</enabled>-->
-<!--                        </layers>-->
-<!--                    </configuration>-->
-<!--                    <executions>-->
-<!--                        <execution>-->
-<!--                            <goals>-->
-<!--                                <goal>repackage</goal>-->
-<!--                            </goals>-->
-<!--                        </execution>-->
-<!--                    </executions>-->
-<!--                </plugin>-->
-<!--            </plugins>-->
-<!--        </pluginManagement>-->
         <plugins>
             <!--打包jar 与git commit 关联插件-->
             <plugin>

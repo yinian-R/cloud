@@ -15,8 +15,8 @@
     <description>公共聚合模块</description>
 
     <modules>
-        <module>wymm-common-bom</module>
         <module>wymm-common-core</module>
+        <module>wymm-common-dao</module>
         <module>wymm-common-excel</module>
         <module>wymm-common-log</module>
         <module>wymm-common-meta</module>

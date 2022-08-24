@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.wymm.common.core.config.Configuration,\
   com.wymm.common.core.config.JacksonConfiguration,\
   com.wymm.common.core.config.RestTemplateConfiguration,\
   com.wymm.common.core.config.WebMvcConfiguration

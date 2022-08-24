@@ -4,7 +4,6 @@ import cn.hutool.core.io.resource.Resource;
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.wymm.common.excel.annotation.ExcelResponse;
 import com.wymm.common.excel.config.ExcelConfigProperties;
@@ -13,44 +12,24 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.MediaTypeFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 @RequiredArgsConstructor
 public abstract class AbstractWriteHandler implements WriteHandler {
     
     private final ExcelConfigProperties configProperties;
     
-    protected void setExportFile(HttpServletResponse response, ExcelResponse excelResponse) {
-        setExportFile(response, excelResponse.fileName(), excelResponse.suffix());
-    }
-    
     /**
-     * 设置导出文件
+     * 初始化 HttpServletResponse（ContentType、CharacterEncoding、Header）
      *
-     * @param response response
-     * @param fileName 文件名
-     * @param suffix   文件后缀
+     * @param response      HttpServletResponse
+     * @param excelResponse ExcelResponse
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
-    public static void setExportFile(HttpServletResponse response, String fileName, ExcelTypeEnum suffix) {
-        fileName = ExcelUtils.fileNameJoinDateTime(fileName);
-        fileName = String.format("%s%s", URLEncoder.encode(fileName, "UTF-8"), suffix.getValue());
-        
-        // 根据实际的文件类型找到对应的 contentType
-        String contentType = MediaTypeFactory.getMediaType(fileName)
-                .map(MediaType::toString)
-                .orElse("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setContentType(contentType);
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
+    protected void initResponse(HttpServletResponse response, ExcelResponse excelResponse) {
+        ExcelUtils.initResponse(response, excelResponse.fileName(), excelResponse.suffix());
     }
     
     
