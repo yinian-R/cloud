@@ -11,6 +11,7 @@ import org.springframework.http.MediaTypeFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.util.function.Function;
 
 public abstract class ExcelUtils {
     
@@ -22,11 +23,15 @@ public abstract class ExcelUtils {
      * @param fileName 文件名
      * @param suffix   文件后缀
      */
-    @SneakyThrows(UnsupportedEncodingException.class)
     public static void initResponse(HttpServletResponse response, String fileName, ExcelTypeEnum suffix) {
-        fileName = ExcelUtils.fileNameJoinDateTime(fileName);
+        initResponse(response, fileName, Function.identity(),suffix);
+    }
+    
+    @SneakyThrows(UnsupportedEncodingException.class)
+    public static void initResponse(HttpServletResponse response, String fileName, Function<String,String> fileNameWrapper, ExcelTypeEnum suffix) {
+        fileName = fileNameWrapper.apply(fileName);
         fileName = String.format("%s%s", URLEncoder.encode(fileName, "UTF-8"), suffix.getValue());
-        
+    
         // 根据实际的文件类型找到对应的 contentType
         String contentType = MediaTypeFactory.getMediaType(fileName)
                 .map(MediaType::toString)

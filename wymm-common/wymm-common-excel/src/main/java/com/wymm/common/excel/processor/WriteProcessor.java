@@ -1,11 +1,11 @@
-package com.wymm.common.excel.handler;
+package com.wymm.common.excel.processor;
 
 import com.wymm.common.excel.annotation.ExcelResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import java.lang.reflect.Method;
 
-public interface WriteHandler {
+public interface WriteProcessor {
     
     /**
      * 是否支持

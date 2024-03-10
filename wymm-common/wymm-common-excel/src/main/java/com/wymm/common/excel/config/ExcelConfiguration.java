@@ -1,8 +1,9 @@
 package com.wymm.common.excel.config;
 
-import com.wymm.common.excel.aop.ExcelResponseReturnValueHandler;
-import com.wymm.common.excel.handler.SingleSheetWriteHandler;
-import com.wymm.common.excel.handler.WriteHandler;
+import com.wymm.common.excel.aop.ExcelResponseReturnValueProcessor;
+import com.wymm.common.excel.processor.SingleSheetWriteFillProcessor;
+import com.wymm.common.excel.processor.SingleSheetWriteProcessor;
+import com.wymm.common.excel.processor.WriteProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -22,16 +23,20 @@ public class ExcelConfiguration {
     
     @Bean
     @ConditionalOnMissingBean
-    public ExcelResponseReturnValueHandler responseExcelReturnValueHandler(List<HttpMessageConverter<?>> converters,
-                                                                           List<WriteHandler> writeHandlerList) {
-        return new ExcelResponseReturnValueHandler(converters, writeHandlerList);
+    public ExcelResponseReturnValueProcessor responseExcelReturnValueHandler(List<HttpMessageConverter<?>> converters,
+                                                                             List<WriteProcessor> writeProcessorList) {
+        return new ExcelResponseReturnValueProcessor(converters, writeProcessorList);
     }
     
     @Bean
     @ConditionalOnMissingBean
-    public SingleSheetWriteHandler singleSheetWriteHandler(ExcelConfigProperties excelConfigProperties) {
-        return new SingleSheetWriteHandler(excelConfigProperties);
+    public SingleSheetWriteProcessor singleSheetWriteHandler(ExcelConfigProperties excelConfigProperties) {
+        return new SingleSheetWriteProcessor(excelConfigProperties);
     }
     
-    
+    @Bean
+    @ConditionalOnMissingBean
+    public SingleSheetWriteFillProcessor singleSheetWriteFillHandler(ExcelConfigProperties excelConfigProperties) {
+        return new SingleSheetWriteFillProcessor(excelConfigProperties);
+    }
 }

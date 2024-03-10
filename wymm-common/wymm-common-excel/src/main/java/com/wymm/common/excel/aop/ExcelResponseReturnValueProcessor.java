@@ -1,7 +1,8 @@
 package com.wymm.common.excel.aop;
 
 import com.wymm.common.excel.annotation.ExcelResponse;
-import com.wymm.common.excel.handler.WriteHandler;
+import com.wymm.common.excel.handler.ExcelHandleHelper;
+import com.wymm.common.excel.processor.WriteProcessor;
 import com.wymm.common.excel.util.ExcelException;
 import com.wymm.common.excel.vo.ErrorMessage;
 import javax.servlet.http.HttpServletResponse;
@@ -19,13 +20,13 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Slf4j
-public class ExcelResponseReturnValueHandler extends RequestResponseBodyMethodProcessor {
+public class ExcelResponseReturnValueProcessor extends RequestResponseBodyMethodProcessor {
     
-    private final List<WriteHandler> writeHandlerList;
+    private final List<WriteProcessor> writeProcessorList;
     
-    public ExcelResponseReturnValueHandler(List<HttpMessageConverter<?>> converters, List<WriteHandler> writeHandlerList) {
+    public ExcelResponseReturnValueProcessor(List<HttpMessageConverter<?>> converters, List<WriteProcessor> writeProcessorList) {
         super(converters);
-        this.writeHandlerList = writeHandlerList;
+        this.writeProcessorList = writeProcessorList;
     }
     
     /**
@@ -51,7 +52,7 @@ public class ExcelResponseReturnValueHandler extends RequestResponseBodyMethodPr
             
             ExcelResponse excelResponse = returnType.getMethodAnnotation(ExcelResponse.class);
             
-            writeHandlerList.stream()
+            writeProcessorList.stream()
                     .filter(v -> v.support(method, excelResponse))
                     .findFirst()
                     .orElseThrow(() -> new ExcelException("Can not find 'WriteHandler' support " + method.getReturnType().getName()))
@@ -60,7 +61,14 @@ public class ExcelResponseReturnValueHandler extends RequestResponseBodyMethodPr
             log.error(e.getMessage(), e);
             ErrorMessage message = new ErrorMessage();
             message.setErrorMessage(e.getMessage());
+    
+            // 重置response
+            response.reset();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
             super.handleReturnValue(message, returnType, mavContainer, webRequest);
+        } finally {
+            ExcelHandleHelper.clearWriteHandlers();
         }
     }
     

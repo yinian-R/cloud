@@ -1,9 +1,10 @@
-package com.wymm.common.excel.handler;
+package com.wymm.common.excel.processor;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.wymm.common.excel.annotation.ExcelResponse;
+import com.wymm.common.excel.annotation.WriteSheetParam;
 import com.wymm.common.excel.config.ExcelConfigProperties;
 import com.wymm.common.excel.util.ExcelException;
 
@@ -14,9 +15,9 @@ import org.apache.commons.lang3.ObjectUtils;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-public class SingleSheetWriteHandler extends AbstractWriteHandler {
+public class SingleSheetWriteProcessor extends AbstractWriteProcessor {
     
-    public SingleSheetWriteHandler(ExcelConfigProperties configProperties) {
+    public SingleSheetWriteProcessor(ExcelConfigProperties configProperties) {
         super(configProperties);
     }
     
@@ -30,7 +31,7 @@ public class SingleSheetWriteHandler extends AbstractWriteHandler {
     @Override
     public boolean support(Method executable, ExcelResponse excelResponse) {
         Class<?> methodReturnType = executable.getReturnType();
-        return Collection.class.isAssignableFrom(methodReturnType);
+        return Collection.class.isAssignableFrom(methodReturnType) && excelResponse.writeSheets().length == 1;
     }
     
     /**
@@ -44,17 +45,20 @@ public class SingleSheetWriteHandler extends AbstractWriteHandler {
         if (ObjectUtils.isEmpty(excelResponse.fileName())) {
             throw new ExcelException("@ResponseExcel fileName 不能为空");
         }
-        if (ObjectUtils.isEmpty(excelResponse.sheets())) {
-            throw new ExcelException("@ResponseExcel sheets 不能为空");
+        if (ObjectUtils.isEmpty(excelResponse.writeSheets())) {
+            throw new ExcelException("@ResponseExcel writeSheets 不能为空");
         }
-        if (ObjectUtils.isEmpty(excelResponse.sheets().length != 1)) {
-            throw new ExcelException("@ResponseExcel sheets expect 1. actual " + excelResponse.sheets().length);
+        if (excelResponse.writeSheets().length != 1) {
+            throw new ExcelException("@ResponseExcel writeSheets expect 1. actual " + excelResponse.writeSheets().length);
         }
-        for (ExcelResponse.Sheet sheet : excelResponse.sheets()) {
-            if (ObjectUtils.isEmpty(sheet.sheetName())) {
-                throw new ExcelException("@ResponseExcel sheets.sheetName 不能为空");
-            }
+        WriteSheetParam sheet = excelResponse.writeSheets()[0];
+        if (ObjectUtils.isEmpty(sheet.sheetName())) {
+            throw new ExcelException("@ResponseExcel writeSheets.sheetName 不能为空");
         }
+        if (ObjectUtils.isNotEmpty(excelResponse.template())) {
+            throw new ExcelException("@ResponseExcel write sheets not support template");
+        }
+        
     }
     
     /**
@@ -75,18 +79,12 @@ public class SingleSheetWriteHandler extends AbstractWriteHandler {
         ExcelWriter excelWriter = null;
         try {
             excelWriter = getExcelWriter(response, excelResponse);
-            WriteSheet writeSheet;
             
-            // 是否按模板写入
-            if (ObjectUtils.isNotEmpty(excelResponse.template())) {
-                writeSheet = EasyExcel.writerSheet(0)
-                        .build();
-            } else {
-                ExcelResponse.Sheet sheet = excelResponse.sheets()[0];
-                writeSheet = EasyExcel.writerSheet(sheet.sheetNo(), sheet.sheetName())
-                        .head(sheet.head())
-                        .build();
-            }
+            WriteSheetParam sheet = excelResponse.writeSheets()[0];
+            WriteSheet writeSheet = EasyExcel.writerSheet(sheet.sheetName())
+                    .head(sheet.head())
+                    .build();
+            
             excelWriter.write(list, writeSheet);
         } finally {
             if (excelWriter != null) {

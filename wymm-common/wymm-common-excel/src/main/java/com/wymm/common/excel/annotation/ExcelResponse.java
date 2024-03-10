@@ -19,6 +19,13 @@ public @interface ExcelResponse {
     String fileName();
     
     /**
+     * Excel filename add time suffix
+     * true example：filename-yyyyMMddHHmmss
+     * false example：filename
+     */
+    boolean fileNameTimeSuffix() default true;
+    
+    /**
      * Excel type.The default is xlsx
      */
     ExcelTypeEnum suffix() default ExcelTypeEnum.XLSX;
@@ -30,45 +37,30 @@ public @interface ExcelResponse {
     boolean inMemory() default false;
     
     /**
-     * Whether the encryption
-     * WARRING:Encryption is when the entire file is read into memory, so it is very memory intensive.
-     */
-    String password() default "";
-    
-    /**
      * Template file
-     *
+     * use: String.join(File.separator, template())
+     * <p>
+     * example: {"file:", "home", "demo.xlsx"}
+     * <p>
      * use local file example:
      * "file:/home/demo.xlsx"
      * "/home/demo.xlsx"
-     *
+     * <p>
      * class resource file example:
      * "excel/demo.xlsx"
      */
-    String template() default "";
+    String[] template() default {};
     
     /**
-     * Sheet
+     * Write Sheet
      */
-    Sheet[] sheets() default {};
+    WriteSheetParam[] writeSheets() default {};
     
-    @interface Sheet {
-        
-        /**
-         * head
-         */
-        Class<?> head() default Void.class;
+    /**
+     * Fill Sheet
+     */
+    FillSheetParam[] fillSheets() default {};
     
-        /**
-         * Index of sheet,0 base.
-         */
-        int sheetNo() default 0;
-        
-        /**
-         * The name of sheet.
-         */
-        String sheetName() default "";
-        
-    }
+    
     
 }

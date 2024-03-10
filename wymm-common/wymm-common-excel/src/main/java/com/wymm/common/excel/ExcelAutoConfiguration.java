@@ -1,7 +1,7 @@
 package com.wymm.common.excel;
 
 import com.alibaba.excel.EasyExcel;
-import com.wymm.common.excel.aop.ExcelResponseReturnValueHandler;
+import com.wymm.common.excel.aop.ExcelResponseReturnValueProcessor;
 import com.wymm.common.excel.config.ExcelConfiguration;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class ExcelAutoConfiguration {
     
     private final RequestMappingHandlerAdapter requestMappingHandlerAdapter;
     
-    private final ExcelResponseReturnValueHandler excelResponseReturnValueHandler;
+    private final ExcelResponseReturnValueProcessor excelResponseReturnValueProcessor;
     
     @PostConstruct
     public void setResponseReturnValueHandler() {
@@ -30,7 +30,7 @@ public class ExcelAutoConfiguration {
                 .getReturnValueHandlers();
     
         List<HandlerMethodReturnValueHandler> newHandlers = new ArrayList<>();
-        newHandlers.add(excelResponseReturnValueHandler);
+        newHandlers.add(excelResponseReturnValueProcessor);
         assert returnValueHandlers != null;
         newHandlers.addAll(returnValueHandlers);
         requestMappingHandlerAdapter.setReturnValueHandlers(newHandlers);
