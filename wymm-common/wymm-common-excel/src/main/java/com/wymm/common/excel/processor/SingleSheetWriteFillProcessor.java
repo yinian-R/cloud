@@ -51,6 +51,13 @@ public class SingleSheetWriteFillProcessor extends AbstractWriteProcessor {
         }
     }
     
+    @Override
+    protected ExcelWriter getExcelWriter(HttpServletResponse response, ExcelResponse excelResponse) {
+        ExcelWriter excelWriter = super.getExcelWriter(response, excelResponse);
+        excelWriter.writeContext().writeWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
+        return excelWriter;
+    }
+    
     /**
      * 导出
      *
@@ -88,6 +95,7 @@ public class SingleSheetWriteFillProcessor extends AbstractWriteProcessor {
                 // 单列表填充
                 excelWriter.fill(resultValue, writeSheet);
             }
+            
         } finally {
             if (excelWriter != null) {
                 // 关闭流
