@@ -54,6 +54,7 @@ public class SingleSheetWriteFillProcessor extends AbstractWriteProcessor {
     @Override
     protected ExcelWriter getExcelWriter(HttpServletResponse response, ExcelResponse excelResponse) {
         ExcelWriter excelWriter = super.getExcelWriter(response, excelResponse);
+        // 避免填充公式不立即显示
         excelWriter.writeContext().writeWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
         return excelWriter;
     }
