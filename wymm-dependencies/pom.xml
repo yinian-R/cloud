@@ -34,17 +34,17 @@
             <dependency>
                 <groupId>com.wymm4cloud</groupId>
                 <artifactId>wymm-common-core</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.wymm4cloud</groupId>
                 <artifactId>wymm-common-excel</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.wymm4cloud</groupId>
                 <artifactId>wymm-common-log</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.0</version>
             </dependency>
             <!-- hutool -->
             <dependency>

@@ -34,6 +34,16 @@ public class TestController {
     }
     
     @MetaMapping
+    @GetMapping("/list")
+    public List<BookVO> list() {
+        List<BookVO> list = new ArrayList<>();
+        BookVO bookVO = new BookVO();
+        bookVO.setBookType("1");
+        list.add(bookVO);
+        return list;
+    }
+    
+    @MetaMapping
     @GetMapping("/intArray")
     public Integer[] integer1() {
         return new Integer[]{1,2};
