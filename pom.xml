@@ -36,6 +36,7 @@
         <spring.checkstyle.plugin>0.0.29</spring.checkstyle.plugin>
     
         <skipTests>true</skipTests>
+
     </properties>
 
     <dependencies>
@@ -83,7 +84,7 @@
             <dependency>
                 <groupId>com.wymm4cloud</groupId>
                 <artifactId>wymm-dependencies</artifactId>
-                <version>${project.version}</version>
+                <version>1.0.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     
-    <artifactId>wymm-common-mybatis</artifactId>
+    <artifactId>wymm-common-dao</artifactId>
     
     <dependencies>
         <dependency>

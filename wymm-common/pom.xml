@@ -16,7 +16,7 @@
 
     <modules>
         <module>wymm-common-core</module>
-        <module>wymm-common-mybatis</module>
+        <module>wymm-common-dao</module>
         <module>wymm-common-excel</module>
         <module>wymm-common-log</module>
         <module>wymm-common-meta</module>

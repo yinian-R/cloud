@@ -118,7 +118,6 @@ public class ExcelController {
     
     @ExcelResponse(
             fileName = "测试使用模板填充导出", fileNameTimeSuffix = false, template = "excel/fill.xlsx",
-            inMemory = true,
             fillSheets = @FillSheetParam(sheetName = "meta")
     )
     @GetMapping("/downloadFill")
