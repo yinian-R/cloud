@@ -14,10 +14,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@HeadStyle(fillPatternType = FillPatternTypeEnum.NO_FILL,
-        borderLeft = BorderStyleEnum.NONE, borderRight = BorderStyleEnum.NONE, borderTop = BorderStyleEnum.NONE, borderBottom = BorderStyleEnum.NONE)
-@HeadFontStyle(fontHeightInPoints = 12)
-@ContentStyle
 @Data
 public class TemplateExcel {
     
@@ -26,7 +22,7 @@ public class TemplateExcel {
     
     @ExcelProperty()
     private String author;
-    @ExcelProperty("")
+    @ExcelProperty("作者")
     private String author1;
     
     @ExcelOption(options = {"自然", "科学", "文明"})

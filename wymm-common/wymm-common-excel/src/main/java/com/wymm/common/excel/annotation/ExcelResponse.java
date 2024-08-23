@@ -56,11 +56,4 @@ public @interface ExcelResponse {
      */
     WriteSheetParam[] writeSheets() default {};
     
-    /**
-     * Fill Sheet
-     */
-    FillSheetParam[] fillSheets() default {};
-    
-    
-    
 }
