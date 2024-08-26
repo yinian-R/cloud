@@ -10,6 +10,7 @@ import com.wymm.common.excel.annotation.WriteSheetParam;
 import com.wymm.common.excel.handler.ExcelHandleHelper;
 import com.wymm.common.excel.handler.write.DateFormatStyleWriteHandler;
 import com.wymm.common.excel.handler.write.TitleStatStyleWriteHandler;
+import com.wymm.common.excel.processor.ExcelWriterProcess;
 import com.wymm.sample.excel.core.DictOptionWriteHandler;
 import com.wymm.sample.excel.model.DownloadData;
 import com.wymm.sample.excel.model.DownloadData2;
@@ -185,7 +186,7 @@ public class ExcelController {
             fileName = "测试导出1个excel并且写入多个sheet"
     )
     @GetMapping("/downloadOneExcelMutiSheet")
-    public Consumer<ExcelWriter> downloadOneExcelMutiSheet() {
+    public ExcelWriterProcess downloadOneExcelMutiSheet() {
         List<DownloadData> data = data();
         List<DownloadData2> data2 = data2();
         return excelWriter -> {
@@ -204,7 +205,7 @@ public class ExcelController {
             fileName = "测试导出1个excel并且填充/写入多个sheet", fileNameTimeSuffix = false, template = "excel/fillComposite.xlsx"
     )
     @GetMapping("/downloadOneExcelMutiFill")
-    public Consumer<ExcelWriter> downloadCompositeFill2() {
+    public ExcelWriterProcess downloadCompositeFill2() {
         List<DownloadData> data = data();
         List<DownloadData> data2 = data();
         return excelWriter -> {

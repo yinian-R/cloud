@@ -29,7 +29,7 @@ public class EnhanceProcessor extends AbstractWriteProcessor {
     @Override
     public boolean support(Method executable, ExcelResponse excelResponse) {
         Class<?> methodReturnType = executable.getReturnType();
-        return Consumer.class.isAssignableFrom(methodReturnType);
+        return ExcelWriterProcess.class.isAssignableFrom(methodReturnType);
     }
     
     /**
@@ -68,7 +68,7 @@ public class EnhanceProcessor extends AbstractWriteProcessor {
     public void export(Object resultValue, HttpServletResponse response, ExcelResponse excelResponse) {
         this.check(resultValue, excelResponse);
         
-        Consumer<ExcelWriter> resultFunction = (Consumer<ExcelWriter>) resultValue;
+        ExcelWriterProcess resultFunction = (ExcelWriterProcess) resultValue;
         
         this.initResponse(response, excelResponse);
         
