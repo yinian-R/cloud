@@ -57,7 +57,7 @@ public void uploadExcel(MultipartFile file) throws IOException {
 ```
 @ExcelResponse(
         fileName = "XXX记录导出",
-        sheets = @ExcelResponse.Sheet(sheetName = "sheetNameHR", head = DownloadData.class)
+        writeSheets = @WriteSheetParam(sheetName = "sheetNameHR", head = DownloadData.class)
 )
 @GetMapping("/download")
 public List<DownloadData> download() {

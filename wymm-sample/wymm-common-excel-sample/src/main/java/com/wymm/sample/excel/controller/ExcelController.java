@@ -45,7 +45,7 @@ public class ExcelController {
         String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
         
-        EasyExcel.write(response.getOutputStream()).sheet("模板").doWrite(data());
+        EasyExcel.write(response.getOutputStream()).sheet("模板").doWrite(Data.data());
     }
     
     /**
@@ -57,7 +57,7 @@ public class ExcelController {
     )
     @GetMapping("/downloadByAn")
     public List<DownloadData> downloadByAn() {
-        return data();
+        return Data.data();
     }
     
     /**
@@ -69,7 +69,7 @@ public class ExcelController {
     )
     @GetMapping("/downloadByAnCSV")
     public List<DownloadData> downloadByAnCSV() {
-        return data();
+        return Data.data();
     }
     
     /**
@@ -80,7 +80,7 @@ public class ExcelController {
     )
     @GetMapping("/downloadByAnXLS")
     public List<DownloadData> downloadByAnXLS() {
-        return data();
+        return Data.data();
     }
     
     /**
@@ -89,7 +89,7 @@ public class ExcelController {
     @ExcelResponse(fileName = "测试导出", suffix = ExcelTypeEnum.XLS)
     @GetMapping("/downloadErrorResultType")
     public DownloadData downloadByResultType() {
-        return data().get(0);
+        return Data.data().get(0);
     }
     
     /**
@@ -101,8 +101,8 @@ public class ExcelController {
     @GetMapping("/downloadError")
     public List<List<DownloadData>> error() {
         List<List<DownloadData>> list = new ArrayList<>();
-        list.add(data());
-        list.add(data());
+        list.add(Data.data());
+        list.add(Data.data());
         return list;
     }
     
@@ -115,7 +115,7 @@ public class ExcelController {
     )
     @GetMapping("/downloadByAnOthor")
     public List<DownloadData> downloadByAnOther() {
-        return data();
+        return Data.data();
     }
     
     
@@ -158,37 +158,13 @@ public class ExcelController {
         }
     }
     
-    private List<DownloadData> data() {
-        List<DownloadData> list = ListUtils.newArrayList();
-        for (int i = 0; i < 10; i++) {
-            DownloadData data = new DownloadData();
-            data.setString("字符串" + 0);
-            data.setDate(new Date());
-            data.setDoubleData(0.56);
-            data.setTime(LocalDateTime.now());
-            list.add(data);
-        }
-        return list;
-    }
-    private List<DownloadData2> data2() {
-        List<DownloadData2> list = ListUtils.newArrayList();
-        for (int i = 0; i < 10; i++) {
-            DownloadData2 data = new DownloadData2();
-            data.setString("字符串" + 0);
-            data.setDate(new Date());
-            data.setTime(LocalDateTime.now());
-            list.add(data);
-        }
-        return list;
-    }
-    
     @ExcelResponse(
             fileName = "测试导出1个excel并且写入多个sheet"
     )
     @GetMapping("/downloadOneExcelMutiSheet")
     public ExcelWriterProcess downloadOneExcelMutiSheet() {
-        List<DownloadData> data = data();
-        List<DownloadData2> data2 = data2();
+        List<DownloadData> data = Data.data();
+        List<DownloadData2> data2 = Data.data2();
         return excelWriter -> {
             excelWriter.write(data, EasyExcel.writerSheet("data")
                     .head(DownloadData.class)
@@ -206,8 +182,8 @@ public class ExcelController {
     )
     @GetMapping("/downloadOneExcelMutiFill")
     public ExcelWriterProcess downloadCompositeFill2() {
-        List<DownloadData> data = data();
-        List<DownloadData> data2 = data();
+        List<DownloadData> data = Data.data();
+        List<DownloadData> data2 = Data.data();
         return excelWriter -> {
             excelWriter.fill(new FillWrapper("data1", data), EasyExcel.writerSheet("meta")
                     .build()
@@ -215,7 +191,7 @@ public class ExcelController {
             excelWriter.fill(new FillWrapper("data2", data2), EasyExcel.writerSheet("meta")
                     .build()
             );
-            excelWriter.fill(new FillWrapper("data3", data2()), EasyExcel.writerSheet("meta-data3")
+            excelWriter.fill(new FillWrapper("data3", Data.data2()), EasyExcel.writerSheet("meta-data3")
                     .build()
             );
             
