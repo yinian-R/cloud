@@ -9,6 +9,8 @@ import com.alibaba.excel.write.handler.WriteHandler;
 import com.wymm.common.excel.annotation.ExcelResponse;
 import com.wymm.common.excel.config.ExcelConfigProperties;
 import com.wymm.common.excel.handler.ExcelHandleHelper;
+import com.wymm.common.excel.handler.write.StyleCellStyleStrategy;
+import com.wymm.common.excel.handler.write.StyleSheetWriteHandler;
 import com.wymm.common.excel.util.ExcelUtils;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,14 +46,24 @@ public abstract class AbstractWriteProcessor implements WriteProcessor {
      * @param excelResponse ExcelResponse
      * @return ExcelWriter
      */
-    @SneakyThrows(IOException.class)
+    
     protected ExcelWriter getExcelWriter(HttpServletResponse response, ExcelResponse excelResponse) {
+        ExcelWriterBuilder excelWriterBuilder = getExcelWriterBuilder(response, excelResponse);
+        ExcelWriter excelWriter = excelWriterBuilder.build();
+        // 打开文件时重新计算公式
+        excelWriter.writeContext().writeWorkbookHolder().getWorkbook().setForceFormulaRecalculation(true);
+        return excelWriter;
+    }
+    
+    @SneakyThrows(IOException.class)
+    protected ExcelWriterBuilder getExcelWriterBuilder(HttpServletResponse response, ExcelResponse excelResponse) {
         ExcelWriterBuilder excelWriterBuilder = EasyExcel.write(response.getOutputStream())
                 // 这里设置不自动关闭流，为了发生异常时封装错误返回
                 .autoCloseStream(Boolean.FALSE)
                 .excelType(excelResponse.suffix())
                 .inMemory(excelResponse.inMemory());
         
+        boolean hasTemplate = false;
         // 设置模板文件
         if (ObjectUtils.isNotEmpty(excelResponse.template())) {
             String templatePath = configProperties.getTemplatePath();
@@ -60,7 +72,10 @@ public abstract class AbstractWriteProcessor implements WriteProcessor {
             Resource resourceObj = ResourceUtil.getResourceObj(templateFilePath);
             InputStream stream = resourceObj.getStream();
             excelWriterBuilder.withTemplate(stream);
+            hasTemplate = true;
         }
+        
+        setDefaultStyle(excelResponse, excelWriterBuilder);
         
         // 设置策略处理类
         if (ObjectUtils.isNotEmpty(ExcelHandleHelper.getWriteHandlers())) {
@@ -68,8 +83,10 @@ public abstract class AbstractWriteProcessor implements WriteProcessor {
                 excelWriterBuilder.registerWriteHandler(writeHandler);
             }
         }
-        
-        return excelWriterBuilder.build();
+        return excelWriterBuilder;
+    }
+    
+    protected void setDefaultStyle(ExcelResponse excelResponse, ExcelWriterBuilder excelWriterBuilder) {
     }
     
     protected String getTemplateFilePath(ExcelResponse excelResponse) {

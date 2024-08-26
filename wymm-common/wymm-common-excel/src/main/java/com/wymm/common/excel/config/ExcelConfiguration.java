@@ -1,9 +1,7 @@
 package com.wymm.common.excel.config;
 
 import com.wymm.common.excel.aop.ExcelResponseReturnValueProcessor;
-import com.wymm.common.excel.processor.SingleSheetWriteFillProcessor;
-import com.wymm.common.excel.processor.SingleSheetWriteProcessor;
-import com.wymm.common.excel.processor.WriteProcessor;
+import com.wymm.common.excel.processor.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +34,14 @@ public class ExcelConfiguration {
     
     @Bean
     @ConditionalOnMissingBean
-    public SingleSheetWriteFillProcessor singleSheetWriteFillHandler(ExcelConfigProperties excelConfigProperties) {
-        return new SingleSheetWriteFillProcessor(excelConfigProperties);
+    public EnhanceProcessor enhanceProcessor(ExcelConfigProperties excelConfigProperties) {
+        return new EnhanceProcessor(excelConfigProperties);
+    }
+    
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public BlankFileProcessor blankFileProcessor(ExcelConfigProperties excelConfigProperties) {
+        return new BlankFileProcessor(excelConfigProperties);
     }
 }

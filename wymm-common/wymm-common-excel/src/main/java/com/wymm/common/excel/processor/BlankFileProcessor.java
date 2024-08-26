@@ -8,19 +8,16 @@ import com.wymm.common.excel.annotation.ExcelResponse;
 import com.wymm.common.excel.annotation.WriteSheetParam;
 import com.wymm.common.excel.config.ExcelConfigProperties;
 import com.wymm.common.excel.handler.write.StyleCellStyleStrategy;
-import com.wymm.common.excel.handler.write.StyleSheetWriteHandler;
 import com.wymm.common.excel.util.ExcelException;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.ObjectUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.Collections;
 
-public class SingleSheetWriteProcessor extends AbstractWriteProcessor {
+public class BlankFileProcessor extends AbstractWriteProcessor {
     
-    public SingleSheetWriteProcessor(ExcelConfigProperties configProperties) {
+    public BlankFileProcessor(ExcelConfigProperties configProperties) {
         super(configProperties);
     }
     
@@ -34,7 +31,7 @@ public class SingleSheetWriteProcessor extends AbstractWriteProcessor {
     @Override
     public boolean support(Method executable, ExcelResponse excelResponse) {
         Class<?> methodReturnType = executable.getReturnType();
-        return Collection.class.isAssignableFrom(methodReturnType) && excelResponse.writeSheets().length == 1;
+        return Void.TYPE.equals(methodReturnType);
     }
     
     /**
@@ -48,26 +45,11 @@ public class SingleSheetWriteProcessor extends AbstractWriteProcessor {
         if (ObjectUtils.isEmpty(excelResponse.fileName())) {
             throw new ExcelException("@ResponseExcel fileName 不能为空");
         }
-        if (ObjectUtils.isEmpty(excelResponse.writeSheets())) {
-            throw new ExcelException("@ResponseExcel writeSheets 不能为空");
-        }
-        if (excelResponse.writeSheets().length != 1) {
-            throw new ExcelException("@ResponseExcel writeSheets expect 1. actual " + excelResponse.writeSheets().length);
-        }
-        WriteSheetParam sheet = excelResponse.writeSheets()[0];
-        if (ObjectUtils.isEmpty(sheet.sheetName())) {
-            throw new ExcelException("@ResponseExcel writeSheets.sheetName 不能为空");
-        }
-        if (ObjectUtils.isNotEmpty(excelResponse.template())) {
-            throw new ExcelException("@ResponseExcel write sheets not support template");
-        }
-        
     }
     
     @Override
     protected void setDefaultStyle(ExcelResponse excelResponse, ExcelWriterBuilder excelWriterBuilder) {
-        excelWriterBuilder.registerWriteHandler(new StyleCellStyleStrategy());
-        excelWriterBuilder.registerWriteHandler(new StyleSheetWriteHandler());
+        excelWriterBuilder.registerWriteHandler(new StyleCellStyleStrategy(true, true));
     }
     
     /**
@@ -81,20 +63,20 @@ public class SingleSheetWriteProcessor extends AbstractWriteProcessor {
     public void export(Object resultValue, HttpServletResponse response, ExcelResponse excelResponse) {
         this.check(resultValue, excelResponse);
         
-        Collection<?> list = (Collection<?>) resultValue;
-        
         this.initResponse(response, excelResponse);
         
         ExcelWriter excelWriter = null;
         try {
             excelWriter = getExcelWriter(response, excelResponse);
             
-            WriteSheetParam sheet = excelResponse.writeSheets()[0];
-            WriteSheet writeSheet = EasyExcel.writerSheet(sheet.sheetName())
-                    .head(sheet.head())
-                    .build();
-            
-            excelWriter.write(list, writeSheet);
+            if (ObjectUtils.isNotEmpty(excelResponse.writeSheets())) {
+                for (WriteSheetParam sheet : excelResponse.writeSheets()) {
+                    WriteSheet writeSheet = EasyExcel.writerSheet(sheet.sheetName())
+                            .head(sheet.head())
+                            .build();
+                    excelWriter.write(Collections.emptyList(), writeSheet);
+                }
+            }
         } finally {
             if (excelWriter != null) {
                 // 关闭流
